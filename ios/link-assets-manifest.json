@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/Merriweather-Italic-VariableFont_opsz,wdth,wght.ttf",
+      "sha1": "1bd5a98d21aaa6832a7af79c7d54b8cbb3a20204"
+    },
+    {
+      "path": "src/assets/fonts/Merriweather-VariableFont_opsz,wdth,wght.ttf",
+      "sha1": "44048d5025efc45b5ad241a6a0cee7426b2fa4a9"
+    }
+  ]
+}

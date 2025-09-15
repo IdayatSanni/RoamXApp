@@ -1,4 +1,4 @@
-package com.roamxapp
+package com.roamx.roamx
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

@@ -35,11 +35,37 @@ local.properties
 !debug.keystore
 .kotlin/
 
+# Firebase sensitive files
+# Never commit these to version control
+google-services.json
+GoogleService-Info.plist
+firebase-adminsdk-*.json
+serviceAccountKey.json
+firebase-debug.log
+.firebaserc
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*
+
 # node.js
 #
 node_modules/
 npm-debug.log
 yarn-error.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Package manager locks (choose one approach)
+# Option 1: Keep package-lock.json/yarn.lock for consistency
+# Option 2: Ignore them if using different package managers
+# package-lock.json
+# yarn.lock
 
 # fastlane
 #
@@ -59,12 +85,14 @@ yarn-error.log
 # Ruby / CocoaPods
 **/Pods/
 /vendor/bundle/
+Podfile.lock
 
 # Temporary files created by Metro to check the health of the file watcher
 .metro-health-check*
 
 # testing
 /coverage
+/nyc_output
 
 # Yarn
 .yarn/*
@@ -73,3 +101,44 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Expo (if using Expo)
+.expo/
+dist/
+web-build/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs
+.idea/
+*.swp
+*.swo
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# API keys and secrets (additional protection)
+secrets.js
+config/keys.js
+config/prod.js
+
+# Database
+*.db
+*.sqlite
+
+# Temporary folders
+tmp/
+temp/

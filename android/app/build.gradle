@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+apply plugin: 'com.google.gms.google-services'
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -77,14 +78,21 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.roamxapp"
+    namespace "com.roamx.roamx"
+
     defaultConfig {
-        applicationId "com.roamxapp"
+        applicationId "com.roamx.roamx"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        // OPTIONAL: restrict ABI if needed
+        ndk {
+            abiFilters "armeabi-v7a", "x86", "x86_64", "arm64-v8a"
+        }
     }
+
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
@@ -93,19 +101,34 @@ android {
             keyPassword 'android'
         }
     }
+
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+
+    // ✅ ADD THIS BLOCK
+    // externalNativeBuild {
+    //     cmake {}
+    // }
+
+    // ✅ OPTIONAL: Avoid long build times by only building required ABIs
+    // splits {
+    //     abi {
+    //         enable true
+    //         reset()
+    //         include "armeabi-v7a", "x86", "x86_64"
+    //         universalApk false
+    //     }
+    // }
 }
+
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin

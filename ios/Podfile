@@ -1,3 +1,11 @@
+ENV['RCT_NEW_ARCH_ENABLED'] = '0'
+
+# Disable Ad ID support for Firebase Analytics (no ATT prompt, safe for kids apps)
+$RNFirebaseAnalyticsWithoutAdIdSupport = true
+
+# Minimum iOS deployment version (must be high enough for Firebase 12.2.0+)
+platform :ios, '15.0'
+
 # Resolve react_native_pods.rb with node to allow for hoisting
 require Pod::Executable.execute_command('node', ['-p',
   'require.resolve(
@@ -5,14 +13,11 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
-linkage = ENV['USE_FRAMEWORKS']
-if linkage != nil
-  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
-  use_frameworks! :linkage => linkage.to_sym
-end
+linkage = ENV['USE_FRAMEWORKS'] || 'static'
+Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+use_frameworks! :linkage => linkage.to_sym
 
 target 'RoamXApp' do
   config = use_native_modules!
@@ -23,13 +28,39 @@ target 'RoamXApp' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  # ❌ REMOVE these unless you know you need them individually.
+  # Firebase modules are automatically handled by RNFirebase pods.
+  # pod 'FirebaseAuth', :modular_headers => true
+  # pod 'FirebaseAuthInterop', :modular_headers => true
+  # pod 'FirebaseAppCheckInterop', :modular_headers => true
+  # pod 'FirebaseCore', :modular_headers => true
+  # pod 'FirebaseCoreExtension', :modular_headers => true
+  # pod 'RecaptchaInterop', :modular_headers => true
+  # pod 'FirebaseCoreInternal', :modular_headers => true
+  # pod 'GoogleUtilities', :modular_headers => true
+
   post_install do |installer|
-    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
       installer,
       config[:reactNativePath],
-      :mac_catalyst_enabled => false,
-      # :ccache_enabled => true
+      :mac_catalyst_enabled => false
     )
+    
+    # Force all pods to use iOS 15.0
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+      end
+    end
+    
+    # Fix the generated podspecs automatically
+    if File.exist?("build/generated/ios/ReactAppDependencyProvider.podspec")
+      system("sed -i '' 's/min_supported_versions/{ :ios => \"15.0\" }/g' build/generated/ios/ReactAppDependencyProvider.podspec")
+      system("sed -i '' 's/rct_cxx_language_standard()/\"c++20\"/g' build/generated/ios/ReactAppDependencyProvider.podspec")
+    end
+    
+    if File.exist?("build/generated/ios/ReactCodegen.podspec")
+      system("sed -i '' 's/min_supported_versions/{ :ios => \"15.0\" }/g' build/generated/ios/ReactCodegen.podspec")
+    end
   end
 end

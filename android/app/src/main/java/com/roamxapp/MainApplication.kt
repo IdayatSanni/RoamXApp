@@ -1,4 +1,4 @@
-package com.roamxapp
+package com.roamx.roamx
 
 import android.app.Application
 import com.facebook.react.PackageList
